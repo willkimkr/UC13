@@ -1,0 +1,130 @@
+--DDL
+CREATE DATABASE Rpg
+GO
+
+USE Rpg
+go
+
+
+CREATE TABLE Usuarios
+(
+	IdUsuario INT PRIMARY KEY IDENTITY,
+	Email VARCHAR(100) UNIQUE NOT NULL,
+	Apelido VARCHAR(20) UNIQUE NOT NULL,
+	Senha VARCHAR(30) NOT NULL 
+)
+GO
+
+CREATE TABLE Classes
+(
+	IdClasse INT PRIMARY KEY IDENTITY,
+	Name VARCHAR(30) UNIQUE NOT NULL,
+	Descricao VARCHAR(255) 
+
+
+)
+GO
+
+CREATE TABLE Perssonagens
+(
+	IdPerssonagem INT PRIMARY KEY IDENTITY,
+	Nome VARCHAR(30) UNIQUE NOT NULL,
+	IdUsuario INT UNIQUE FOREIGN KEY REFERENCES Usuarios(IdUsuario),
+	IdClasse INT FOREIGN KEY REFERENCES Classes(IdClasse)
+)
+GO
+
+CREATE TABLE Habilidades
+(
+	IdHabilidade INT PRIMARY KEY IDENTITY,
+	Nome VARCHAR(50) UNIQUE NOT NULL,
+	Descricao VARCHAR(255) 
+)
+GO
+
+CREATE TABLE ClasseHabilidade
+(
+	IdClasse INT FOREIGN KEY REFERENCES Classes(IdClasse),
+	IdHabilidade INT FOREIGN KEY REFERENCES Habilidades(IdHabilidade)
+)
+GO
+
+--DML
+INSERT INTO Usuarios (Email, Senha, Apelido) VALUES ('email@email.com', '1234', 'Rambo')
+INSERT INTO Classes  VALUES ('Barbari', 'Descricao do barbaro')
+INSERT INTO Habilidades VALUES ('Lanca Mortal', 'Descricao da Lanca Mortal'), ('Escudo Supremo', 'Descricao do Escudo Supremo')
+INSERT INTO Perssonagens VALUES ('DeuBUG', 1, 1)
+INSERT INTO ClasseHabilidade VALUES (1, 1), (1, 2)
+
+
+INSERT INTO Usuarios VALUES('emai@email2.com', 'SoulKiller', 1234)
+INSERT INTO Classes VALUES('Monge', 'Descricao Classe Monge')
+INSERT INTO Habilidades VALUES('Recuperar Vida', 'Descricao Recuperar Vida')
+INSERT INTO Perssonagens VALUES('BitBug', 2, 2)
+INSERT INTO ClasseHabilidade VALUES(2, 2), (2, 3)
+
+UPDATE Usuarios SET Senha = 123456 WHERE IdUsuario = 1
+
+
+--DQL
+SELECT * FROM Usuarios
+SELECT Senha, Email FROM Usuarios
+SELECT * FROM Classes
+SELECT * FROM Habilidades
+
+--SELECIONA TUDO DE TUDO
+SELECT * FROM Perssonagens
+INNER JOIN Classes
+ON Perssonagens.IdClasse = Classes.IdClasse
+
+--SELECIONA APENAS AS COLUNAS SOLICITADA
+SELECT Perssonagens.Nome, Classes.Name, Classes.Descricao FROM Perssonagens
+INNER JOIN Classes
+ON Perssonagens.IdClasse = Classes.IdClasse
+
+
+SELECT P.Nome, C.Name 'Classe', C.Descricao FROM Perssonagens P
+INNER JOIN Classes C
+ON P.IdClasse = C.IdClasse
+
+
+
+CREATE DATABASE ExemploJoin
+GO
+
+CREATE TABLE NomeA(
+	Nome VARCHAR(50) NOT NULL
+)
+GO
+
+CREATE TABLE NomeB(
+	Nome VARCHAR(50) NOT NULL 
+)
+GO
+
+INSERT INTO NomeA VALUES ('Fernanda'), ('Maria'), ('Luiz'), ('Caique')--TECNICO
+INSERT INTO NomeB VALUES ('Luiz'), ('Caique'), ('Odirlei'), ('Jessica')--CTM
+
+--JOIN (INNER JOIN) TRAZ SOMENTE ONDE HA EQUIVALENCIA
+SELECT * FROM NomeA
+JOIN NomeB
+ON NomeA.Nome = NomeB.Nome
+
+--LEFT JOIN - TRAZ TODOS OS ELEMENTOS DA PRIMEIRA TABELA SITADA E SUA EQUIVALENCIAS NA SEGUNDA TABELA
+SELECT * FROM NomeA
+LEFT JOIN NomeB
+ON NomeA.Nome = NomeB.Nome
+
+
+-- RIGHT JOIN - TRAZ TODOS OS ELEMENTOS DA SEGUNDA TABELA SITADA E SUAS EQUIVALENCIAS NA PRIMEIRA TABELA
+SELECT * FROM NomeA
+RIGHT JOIN NomeB
+ON NomeA.Nome = NomeB.Nome
+
+
+
+
+--FULL OUTER JOIN - TRAZ TODOS OS ELEMENTOS , SIMPLES ASSIM
+SELECT * FROM NomeA
+FULL OUTER JOIN NomeB
+ON NomeA.Nome = NomeB.Nome
